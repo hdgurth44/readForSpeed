@@ -9,9 +9,28 @@ import SwiftUI
 
 @main
 struct Read_for_speedApp: App {
+    @State private var readerState = ReaderState()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ZStack {
+                if readerState.isReaderPresented {
+                    ReaderView(state: readerState)
+                } else {
+                    EditorView(state: readerState)
+                }
+            }
+            .frame(minWidth: 400, minHeight: 300)
+        }
+        .windowResizability(.contentSize)
+        .commands {
+            CommandGroup(after: .textEditing) {
+                Button("Start Reading") {
+                    readerState.enterReaderMode()
+                }
+                .keyboardShortcut(.return, modifiers: .command)
+                .disabled(!readerState.canPlay)
+            }
         }
     }
 }
