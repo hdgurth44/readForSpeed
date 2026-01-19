@@ -24,6 +24,7 @@ struct Read_for_speedApp: App {
                 }
             }
             .frame(minWidth: 400, minHeight: 300)
+            .preferredColorScheme(.dark)
             .onAppear {
                 if readerState == nil {
                     readerState = ReaderState(defaultWPM: defaultWPM)

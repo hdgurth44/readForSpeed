@@ -18,12 +18,6 @@ struct ReaderView: View {
                 .ignoresSafeArea()
 
             VStack {
-                // Keyboard hints
-                Text("Esc to exit  |  Space to pause  |  ⌘↑ to increase speed")
-                    .font(.callout)
-                    .foregroundStyle(Theme.textSecondary.opacity(0.6))
-                    .padding(.top, 16)
-
                 Spacer()
 
                 // Guide lines and word display
@@ -93,42 +87,42 @@ struct ReaderView: View {
 
     private var statusBar: some View {
         HStack {
-            // Play/Pause indicator
+            // Left: Play/Pause indicator
             Image(systemName: state.isPlaying ? "play.fill" : "pause.fill")
                 .foregroundColor(Theme.textSecondary)
 
             Spacer()
 
-            // Status text
-            if state.isAtEnd && !state.isPlaying {
-                Text("Complete")
-                    .foregroundColor(Theme.success)
-                    .font(.system(size: 12, design: .monospaced))
+            // Center: Shortcuts
+            Text("Esc to exit  |  Space to pause  |  ⌘↑ to increase speed")
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundColor(Theme.textSecondary)
+
+            Spacer()
+
+            // Right: Stats grouped
+            HStack(spacing: 16) {
+                // Status text (Complete) or WPM
+                if state.isAtEnd && !state.isPlaying {
+                    Text("Complete")
+                        .foregroundColor(Theme.success)
+                } else {
+                    Text("\(state.wpm) WPM")
+                        .foregroundColor(Theme.textSecondary)
+                }
+
+                // Progress
+                Text("\(state.currentIndex + 1)/\(state.wordCount)")
+                    .foregroundColor(Theme.textSecondary)
+
+                // Time remaining
+                Text(formatTime(state.timeRemaining))
+                    .foregroundColor(Theme.textSecondary)
             }
-
-            Spacer()
-
-            // WPM
-            Text("\(state.wpm) WPM")
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(Theme.textSecondary)
-
-            Spacer()
-
-            // Progress
-            Text("\(state.currentIndex + 1)/\(state.wordCount)")
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(Theme.textSecondary)
-
-            Spacer()
-
-            // Time remaining
-            Text(formatTime(state.timeRemaining))
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(Theme.textSecondary)
+            .font(.system(size: 12, design: .monospaced))
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
+        .frame(height: 44)
+        .padding(.horizontal, 16)
         .background(Theme.surfaceElevated)
     }
 

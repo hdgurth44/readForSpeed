@@ -4,24 +4,35 @@
 //
 
 import SwiftUI
-import AppKit
-import UniformTypeIdentifiers
 
 struct EditorView: View {
     @Bindable var state: ReaderState
+
+    private let introText = """
+    Speed reading helps you read faster by showing one word at a time.
+
+    Your eyes stay fixed while words flow past.
+
+    Press Start Reading to try it.
+
+    Use Space to pause and Escape to exit when done.
+    """
 
     var body: some View {
         Group {
             if state.text.isEmpty {
                 EmptyStateView(
-                    onOpenFile: openFile,
-                    onPasteFromClipboard: pasteFromClipboard
+                    onGetStarted: loadIntroText
                 )
             } else {
                 editorContent
             }
         }
         .background(Theme.background)
+    }
+
+    private func loadIntroText() {
+        state.updateText(introText)
     }
 
     private var editorContent: some View {
@@ -34,54 +45,55 @@ struct EditorView: View {
 
             // Bottom bar
             HStack {
-                // Word count
+                // Left: Word count
                 Text("\(state.wordCount) words")
                     .font(.system(size: 12, design: .monospaced))
                     .foregroundColor(Theme.textSecondary)
 
                 Spacer()
 
-                // Play button
-                Button(action: {
-                    state.enterReaderMode()
-                }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "play.fill")
-                        Text("Start Reading")
+                // Center: Shortcuts
+                Text("⌘Return to start  |  ⌘, for settings")
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundColor(Theme.textSecondary)
+
+                Spacer()
+
+                // Right: Buttons
+                HStack {
+                    // Fix Formatting button
+                    Button(action: { state.fixFormatting() }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "textformat")
+                            Text("Fix Formatting")
+                        }
+                        .font(.system(size: 12, weight: .medium))
                     }
-                    .font(.system(size: 12, weight: .medium))
+                    .buttonStyle(.bordered)
+                    .disabled(state.text.isEmpty)
+
+                    // Play button
+                    Button(action: {
+                        state.enterReaderMode()
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "play.fill")
+                            Text("Start Reading")
+                        }
+                        .font(.system(size: 12, weight: .medium))
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Theme.indigo700)
+                    .disabled(!state.canPlay)
+                    .keyboardShortcut(.return, modifiers: .command)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(Theme.indigo700)
-                .disabled(!state.canPlay)
-                .keyboardShortcut(.return, modifiers: .command)
             }
+            .frame(height: 44)
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
             .background(Theme.surfaceElevated)
         }
     }
 
-    private func openFile() {
-        let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.plainText]
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-
-        if panel.runModal() == .OK, let url = panel.url {
-            if let content = try? String(contentsOf: url, encoding: .utf8) {
-                state.text = content
-                state.updateText(content)
-            }
-        }
-    }
-
-    private func pasteFromClipboard() {
-        if let content = NSPasteboard.general.string(forType: .string) {
-            state.text = content
-            state.updateText(content)
-        }
-    }
 }
 
 #Preview {

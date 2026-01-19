@@ -94,6 +94,11 @@ class ReaderState {
         isPlaying = false
     }
 
+    func fixFormatting() {
+        let cleaned = MarkdownStripper.strip(text)
+        updateText(cleaned)
+    }
+
     func play() {
         guard canPlay else { return }
         if isAtEnd {

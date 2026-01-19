@@ -7,6 +7,7 @@ import SwiftUI
 
 struct GeneralSettingsView: View {
     @AppStorage("defaultWPM") private var defaultWPM = 350
+    @AppStorage("autoFixFormatting") private var autoFixFormatting = true
 
     var body: some View {
         Form {
@@ -31,6 +32,12 @@ struct GeneralSettingsView: View {
                 }
             } footer: {
                 Text("This speed will be used when starting a new reading session.")
+            }
+
+            Section {
+                Toggle("Auto-fix formatting on paste", isOn: $autoFixFormatting)
+            } footer: {
+                Text("Automatically removes markdown formatting when pasting text.")
             }
         }
         .formStyle(.grouped)
