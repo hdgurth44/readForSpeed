@@ -13,13 +13,17 @@ class ReaderState {
     var words: [String] = []
     var currentIndex: Int = 0
     var isPlaying: Bool = false
-    var wpm: Int = 350
+    var wpm: Int
     var isReaderPresented: Bool = false
 
     static let minWPM = 50
     static let maxWPM = 1000
     static let wpmStep = 50
     static let skipAmount = 10
+
+    init(defaultWPM: Int = 350) {
+        self.wpm = defaultWPM
+    }
 
     // MARK: - Computed Properties
 

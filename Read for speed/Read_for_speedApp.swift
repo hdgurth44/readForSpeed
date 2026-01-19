@@ -9,28 +9,40 @@ import SwiftUI
 
 @main
 struct Read_for_speedApp: App {
-    @State private var readerState = ReaderState()
+    @AppStorage("defaultWPM") private var defaultWPM = 350
+    @State private var readerState: ReaderState?
 
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if readerState.isReaderPresented {
-                    ReaderView(state: readerState)
-                } else {
-                    EditorView(state: readerState)
+                if let state = readerState {
+                    if state.isReaderPresented {
+                        ReaderView(state: state)
+                    } else {
+                        EditorView(state: state)
+                    }
                 }
             }
             .frame(minWidth: 400, minHeight: 300)
+            .onAppear {
+                if readerState == nil {
+                    readerState = ReaderState(defaultWPM: defaultWPM)
+                }
+            }
         }
         .windowResizability(.contentSize)
         .commands {
             CommandGroup(after: .textEditing) {
                 Button("Start Reading") {
-                    readerState.enterReaderMode()
+                    readerState?.enterReaderMode()
                 }
                 .keyboardShortcut(.return, modifiers: .command)
-                .disabled(!readerState.canPlay)
+                .disabled(readerState?.canPlay != true)
             }
+        }
+
+        Settings {
+            SettingsView()
         }
     }
 }
