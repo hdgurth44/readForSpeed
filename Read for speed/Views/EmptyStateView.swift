@@ -24,20 +24,22 @@ struct EmptyStateView: View {
 
             Text("Welcome to Read for Speed")
                 .font(.system(size: 28, weight: .semibold))
+                .foregroundColor(Theme.textPrimary)
 
             VStack(alignment: .leading, spacing: 16) {
                 ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
                     HStack(alignment: .top, spacing: 12) {
                         Text("\(index + 1).")
                             .font(.body.monospaced())
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.textSecondary)
                         Text(step)
                             .font(.body)
+                            .foregroundColor(Theme.textPrimary)
                     }
                 }
             }
             .padding(20)
-            .background(Color.secondary.opacity(0.1))
+            .background(Theme.cardBackground)
             .cornerRadius(12)
 
             HStack(spacing: 16) {
@@ -45,18 +47,21 @@ struct EmptyStateView: View {
                     onOpenFile()
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.indigo700)
 
                 Button("Paste from Clipboard") {
                     onPasteFromClipboard()
                 }
                 .buttonStyle(.bordered)
+                .tint(Theme.indigo400)
             }
 
             Text("⌘Return to start  |  ⌘, for settings")
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Theme.background)
     }
 }
 

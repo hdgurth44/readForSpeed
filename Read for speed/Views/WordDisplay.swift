@@ -9,7 +9,6 @@ struct WordDisplay: View {
     let word: String
 
     private let fontSize: CGFloat = 56
-    private let orpColor = Color(red: 1.0, green: 0.267, blue: 0.267) // #ff4444
 
     var body: some View {
         if word.isEmpty {
@@ -20,20 +19,21 @@ struct WordDisplay: View {
                 // Left portion (right-aligned)
                 Text(leftPortion)
                     .font(.system(size: fontSize, design: .monospaced))
-                    .foregroundColor(.white)
+                    .foregroundColor(Theme.textPrimary)
                     .frame(minWidth: 200, alignment: .trailing)
 
-                // ORP character (red, centered at screen center)
+                // ORP character (highlighted, centered at screen center)
                 Text(orpCharacter)
                     .font(.system(size: fontSize, design: .monospaced))
-                    .foregroundColor(orpColor)
+                    .foregroundColor(Theme.orpHighlight)
 
                 // Right portion (left-aligned)
                 Text(rightPortion)
                     .font(.system(size: fontSize, design: .monospaced))
-                    .foregroundColor(.white)
+                    .foregroundColor(Theme.textPrimary)
                     .frame(minWidth: 200, alignment: .leading)
             }
+            .fixedSize()  // Prevent truncation - always display full word
         }
     }
 
@@ -61,7 +61,7 @@ struct WordDisplay: View {
 
 #Preview {
     ZStack {
-        Color(red: 0.1, green: 0.1, blue: 0.1)
+        Theme.background
         VStack(spacing: 40) {
             WordDisplay(word: "I")
             WordDisplay(word: "am")

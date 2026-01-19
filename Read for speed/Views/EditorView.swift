@@ -10,8 +10,6 @@ import UniformTypeIdentifiers
 struct EditorView: View {
     @Bindable var state: ReaderState
 
-    private let backgroundColor = Color(red: 0.1, green: 0.1, blue: 0.1) // #1a1a1a
-
     var body: some View {
         Group {
             if state.text.isEmpty {
@@ -23,17 +21,13 @@ struct EditorView: View {
                 editorContent
             }
         }
-        .background(backgroundColor)
+        .background(Theme.background)
     }
 
     private var editorContent: some View {
         VStack(spacing: 0) {
             // Text Editor
-            TextEditor(text: $state.text)
-                .font(.system(size: 14, design: .monospaced))
-                .scrollContentBackground(.hidden)
-                .background(backgroundColor)
-                .foregroundColor(.white)
+            PaddedTextEditor(text: $state.text)
                 .onChange(of: state.text) { _, newValue in
                     state.updateText(newValue)
                 }
@@ -43,7 +37,7 @@ struct EditorView: View {
                 // Word count
                 Text("\(state.wordCount) words")
                     .font(.system(size: 12, design: .monospaced))
-                    .foregroundColor(.gray)
+                    .foregroundColor(Theme.textSecondary)
 
                 Spacer()
 
@@ -58,12 +52,13 @@ struct EditorView: View {
                     .font(.system(size: 12, weight: .medium))
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.indigo700)
                 .disabled(!state.canPlay)
                 .keyboardShortcut(.return, modifiers: .command)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .background(Color(white: 0.15))
+            .background(Theme.surfaceElevated)
         }
     }
 

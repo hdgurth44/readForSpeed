@@ -12,30 +12,32 @@ struct ReaderView: View {
     @State private var cursorHidden = false
     @State private var cursorHideTimer: Timer?
 
-    private let backgroundColor = Color(red: 0.1, green: 0.1, blue: 0.1) // #1a1a1a
-    private let guideLineColor = Color(red: 0.267, green: 0.267, blue: 0.267) // #444444
-    private let pivotColor = Color(red: 0.4, green: 0.4, blue: 0.4) // #666666
-
     var body: some View {
         ZStack {
-            backgroundColor
+            Theme.background
                 .ignoresSafeArea()
 
             VStack {
+                // Keyboard hints
+                Text("Esc to exit  |  Space to pause  |  ⌘↑ to increase speed")
+                    .font(.callout)
+                    .foregroundStyle(Theme.textSecondary.opacity(0.6))
+                    .padding(.top, 16)
+
                 Spacer()
 
                 // Guide lines and word display
                 ZStack {
                     // Vertical guide lines
                     Rectangle()
-                        .fill(guideLineColor)
+                        .fill(Theme.guideLine)
                         .frame(width: 1, height: 80)
 
                     // Pivot markers (small triangles pointing at ORP)
                     VStack {
                         // Top marker
                         Triangle()
-                            .fill(pivotColor)
+                            .fill(Theme.pivotMarker)
                             .frame(width: 10, height: 6)
                             .rotationEffect(.degrees(180))
 
@@ -44,7 +46,7 @@ struct ReaderView: View {
 
                         // Bottom marker
                         Triangle()
-                            .fill(pivotColor)
+                            .fill(Theme.pivotMarker)
                             .frame(width: 10, height: 6)
                     }
 
@@ -93,14 +95,14 @@ struct ReaderView: View {
         HStack {
             // Play/Pause indicator
             Image(systemName: state.isPlaying ? "play.fill" : "pause.fill")
-                .foregroundColor(.gray)
+                .foregroundColor(Theme.textSecondary)
 
             Spacer()
 
             // Status text
             if state.isAtEnd && !state.isPlaying {
                 Text("Complete")
-                    .foregroundColor(.green)
+                    .foregroundColor(Theme.success)
                     .font(.system(size: 12, design: .monospaced))
             }
 
@@ -109,25 +111,25 @@ struct ReaderView: View {
             // WPM
             Text("\(state.wpm) WPM")
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(.gray)
+                .foregroundColor(Theme.textSecondary)
 
             Spacer()
 
             // Progress
             Text("\(state.currentIndex + 1)/\(state.wordCount)")
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(.gray)
+                .foregroundColor(Theme.textSecondary)
 
             Spacer()
 
             // Time remaining
             Text(formatTime(state.timeRemaining))
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(.gray)
+                .foregroundColor(Theme.textSecondary)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color(white: 0.12))
+        .background(Theme.surfaceElevated)
     }
 
     private func formatTime(_ seconds: TimeInterval) -> String {
